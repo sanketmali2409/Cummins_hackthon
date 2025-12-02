@@ -1,0 +1,158 @@
+
+#define ENA   14          // Enable/speed motors Right        GPIO14(D5)
+#define ENB   12          // Enable/speed motors Left         GPIO12(D6)
+#define IN_1  15          // L298N in1 motors Right           GPIO15(D8)
+#define IN_2  13          // L298N in2 motors Right           GPIO13(D7)
+#define IN_3  2           // L298N in3 motors Left            GPIO2(D4)
+#define IN_4  0           // L298N in4 motors Left            GPIO0(D3)
+
+#include <ESP8266WiFi.h>
+
+const int inputPin = 4; // D2 -> GPIO4 (IR Sensor)
+String command;             //String to store app command state.
+int speedCar = 800;         // 400 - 1023.
+int speed_Coeff = 3;
+
+void setup() {
+ 
+ pinMode(ENA, OUTPUT);
+ pinMode(ENB, OUTPUT);  
+ pinMode(IN_1, OUTPUT);
+ pinMode(IN_2, OUTPUT);
+ pinMode(IN_3, OUTPUT);
+ pinMode(IN_4, OUTPUT); 
+pinMode(inputPin, INPUT);
+  Serial.begin(115200);
+  
+   
+}
+
+void goAhead(){ 
+
+      digitalWrite(ENA, HIGH);
+      digitalWrite(ENB, HIGH);
+      digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, HIGH);
+   //   analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, HIGH);
+      analogWrite(ENB, speedCar);
+  }
+
+void goBack(){ 
+
+      digitalWrite(IN_1, HIGH);
+      digitalWrite(IN_2, LOW);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, HIGH);
+      digitalWrite(IN_4, LOW);
+      analogWrite(ENB, speedCar);
+  }
+
+void goRight(){ 
+
+      digitalWrite(IN_1, HIGH);
+      digitalWrite(IN_2, LOW);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, HIGH);
+      analogWrite(ENB, speedCar);
+  }
+
+void goLeft(){
+
+      digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, HIGH);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, HIGH);
+      digitalWrite(IN_4, LOW);
+      analogWrite(ENB, speedCar);
+  }
+
+void goAheadRight(){
+      
+      digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, HIGH);
+      analogWrite(ENA, speedCar/speed_Coeff);
+ 
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, HIGH);
+      analogWrite(ENB, speedCar);
+   }
+
+void goAheadLeft(){
+      
+      digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, HIGH);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, HIGH);
+      analogWrite(ENB, speedCar/speed_Coeff);
+  }
+
+void goBackRight(){ 
+
+      digitalWrite(IN_1, HIGH);
+      digitalWrite(IN_2, LOW);
+      analogWrite(ENA, speedCar/speed_Coeff);
+
+      digitalWrite(IN_3, HIGH);
+      digitalWrite(IN_4, LOW);
+      analogWrite(ENB, speedCar);
+  }
+
+void goBackLeft(){ 
+
+      digitalWrite(IN_1, HIGH);
+      digitalWrite(IN_2, LOW);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, HIGH);
+      digitalWrite(IN_4, LOW);
+      analogWrite(ENB, speedCar/speed_Coeff);
+  }
+
+void stopRobot(){  
+      digitalWrite(ENA, HIGH);
+      digitalWrite(ENB, HIGH);
+      digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, LOW);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, LOW);
+      analogWrite(ENB, speedCar);
+ }
+
+void loop() {
+ int sensorValue = digitalRead(inputPin); 
+if (sensorValue == LOW) 
+  {  // Object detected
+    Serial.println("  Object Detected"); 
+    stopRobot();
+        
+   }
+else if (sensorValue==HIGH)
+{
+   Serial.println("NO Object Detected");
+    
+  goAhead();
+  
+}
+      
+     
+}
+
+
+
+
+
+
+
+
+
